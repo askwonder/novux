@@ -62,7 +62,7 @@ export const createReducer = (name, initialState) => (state = initialState, acti
 			return {
 				...state,
 				...nextState,
-				_lastAction: action.tag,
+				lastAction: action.tag,
 			};
 		}
 		return state;
@@ -74,7 +74,7 @@ export const createReducer = (name, initialState) => (state = initialState, acti
 			const resettedState = resetState(initialState, state, nextState);
 			return {
 				...resettedState,
-				_lastAction: action.tag,
+				lastAction: action.tag,
 			};
 		}
 		return state;
