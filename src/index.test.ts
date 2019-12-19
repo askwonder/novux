@@ -1,15 +1,20 @@
-/* global describe, it */
-
+import 'mocha';
 import * as chai from 'chai';
-import novaRedux from '../build';
+import novaRedux, { Reducer } from './';
 
 const { assert } = chai;
 const { update, reset, createReducer } = novaRedux;
 
 const test = describe('novux:', () => {
-	const initialState = { status: { isFetching: false } };
-	let nextState;
-	let api;
+	const initialState: {
+	  status: {
+	    isFetching?: any;
+	    another?: any;
+	  };
+	  test?: boolean;
+	} = { status: { isFetching: false } };
+	let nextState: typeof initialState;
+	let api: Reducer<typeof initialState> | undefined;
 
 	beforeEach(() => {
 		api = createReducer('api', initialState);
@@ -36,7 +41,7 @@ const test = describe('novux:', () => {
 			const resetAction = reset('api', 'Reset the whole state', {
 				reset: [],
 			});
-			const state = api(nextState, resetAction);
+			const state = api!(nextState, resetAction);
 			assert.deepEqual(state, initialState, 'the state is replaced with the initial state');
 			done();
 		});
@@ -45,7 +50,7 @@ const test = describe('novux:', () => {
 			const updateAction = update('api', 'Change isFetching to true', {
 				status: { isFetching: true },
 			});
-			const changeState = api(nextState, updateAction);
+			const changeState = api!(nextState, updateAction);
 			assert.isTrue(changeState.status.isFetching, 'the reducer updates');
 
 			const resetAction = reset('api', 'reset isFetching', {
@@ -56,7 +61,7 @@ const test = describe('novux:', () => {
 				test: true,
 				_lastAction: 'reset isFetching',
 			};
-			const state = api(changeState, resetAction);
+			const state = api!(changeState, resetAction);
 			assert.deepEqual(state, expected, 'if a key is defined in state and initialState, it is reset to its initial value');
 			done();
 		});
@@ -69,7 +74,7 @@ const test = describe('novux:', () => {
 				status: { isFetching: false },
 				_lastAction: 'resetTest',
 			};
-			const state = api(nextState, resetAction);
+			const state = api!(nextState, resetAction);
 			assert.deepEqual(state, expected, 'if a key is defined in state but undefined in the initial state, it\'s removed');
 			done();
 		});
@@ -78,7 +83,7 @@ const test = describe('novux:', () => {
 			const updateAction = update('api', 'Change isFetching to true', {
 				status: { isFetching: true },
 			});
-			const changeState = api(nextState, updateAction);
+			const changeState = api!(nextState, updateAction);
 			assert.isTrue(changeState.status.isFetching, 'the reducer updates');
 
 			const resetAction = reset('api', 'reset valid path', {
@@ -89,7 +94,7 @@ const test = describe('novux:', () => {
 				test: true,
 				_lastAction: 'reset valid path',
 			};
-			const state = api(changeState, resetAction);
+			const state = api!(changeState, resetAction);
 			assert.deepEqual(state, expected, 'if a path is defined in the initial state, it is reset to its initial value');
 			done();
 		});
@@ -99,7 +104,7 @@ const test = describe('novux:', () => {
 			const updateAction = update('api', 'Create long path', {
 				status: { isFetching: { for: { a: { long: { path: true }}}}},
 			});
-			const changeState = api(nextState, updateAction);
+			const changeState = api!(nextState, updateAction);
 			assert.isTrue(changeState.status.isFetching.for.a.long.path);
 
 			const resetAction = reset('api', 'reset invalid path', {
@@ -110,7 +115,7 @@ const test = describe('novux:', () => {
 				test: true,
 				_lastAction: 'reset invalid path',
 			};
-			const state = api(changeState, resetAction);
+			const state = api!(changeState, resetAction);
 			assert.deepEqual(state, expected, 'the longest valid subPath is reset');
 			done();
 		});
@@ -120,7 +125,7 @@ const test = describe('novux:', () => {
 			const updateAction = update('api', 'Create long path', {
 				status: { isFetching: { for: { a: { long: { path: true }}}}},
 			});
-			const changeState = api(nextState, updateAction);
+			const changeState = api!(nextState, updateAction);
 			assert.isTrue(changeState.status.isFetching.for.a.long.path);
 
 			const resetAction = reset('api', 'reset invalid path', {
@@ -131,23 +136,29 @@ const test = describe('novux:', () => {
 				test: true,
 				_lastAction: 'reset invalid path',
 			}
-			const state = api(changeState, resetAction);
+			const state = api!(changeState, resetAction);
 			assert.deepEqual(state, expected, 'the long valid subPath is reset');
 			done();
 		});
 
 		it('if a path is undefined in both the state and the initial state, but a subpath is defined in the initial state, initial values are reset', (done) => {
-			const initialState = { status: { isFetching: false } };
+			const initialState: {
+	      status: {
+	        isFetching?: any;
+	        another?: any;
+	      };
+	      test?: boolean;
+	    } = { status: { isFetching: false } };
 			api = createReducer('api', initialState);
 			const action = update('api', 'branch off', {
 				status: { another: { path: true} },
 			});
-			nextState = api(initialState, action);
+			nextState = api!(initialState, action);
 
 			const action2 = reset('api', 'reset', {
 				reset: ['status.isFetching'],
 			});
-			nextState = api(nextState, action2);
+			nextState = api!(nextState, action2);
 			const expected = {
 				status: {
 					another: { path: true },

@@ -6,19 +6,24 @@
   "main": "build/index.js",
   "scripts": {
     "build": "babel src -d build",
-    "test": "npm run build && mocha --opts .mocharc ./tests/index.js"
+    "test": "npm run build && mocha --opts .mocharc ./build/index.test.js"
   },
   "keywords": [
     "nova",
     "redux",
-		"novux"
+    "novux"
   ],
   "author": "Jules Terrien <jules@neednova.com>",
   "license": "MIT",
   "dependencies": {
-    "dotty": "0.0.2"
+    "lodash": "^4.17.15",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.7.3"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/lodash": "^4.14.149",
+    "@types/mocha": "^5.2.7",
     "babel-cli": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",

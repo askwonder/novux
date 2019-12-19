@@ -1,17 +1,38 @@
-import utils from './utils';
-const { resetState } = utils;
+import { resetState } from './utils';
 
-const UPDATE = 'UPDATE';
-const RESET = 'RESET';
+interface BaseState {
+  _lastAction?: string;
+}
+
+interface ResetKeyList {
+  reset: string[];
+}
+
+interface UpdateAction<T> {
+  type: typeof UPDATE;
+  reducer: string;
+  tag: string;
+  state: Partial<T>;
+}
+
+interface ResetAction<T> {
+  type: typeof RESET;
+  reducer: string;
+  tag: string;
+  state: ResetKeyList;
+}
+
+export const UPDATE = 'UPDATE';
+export const RESET = 'RESET';
 
 /**
 * update
 * @param	{String}	reducer	the name of the reducer to update
 * @param	{String}	tag	a short description of the update
-* @param	{Ojbect}	state the keys to update
+* @param	{Object}	state the keys to update
 * @return {Object} 	an action creator object
 */
-export const update = (reducer, tag, state) => ({
+export const update = <T>(reducer: string, tag: string, state: Partial<T>): UpdateAction<T> => ({
 	type: UPDATE,
 	reducer,
 	tag,
@@ -22,15 +43,19 @@ export const update = (reducer, tag, state) => ({
 * reset
 * @param	{String}	reducer	the name of the reducer to reset
 * @param	{String}	tag	a short description of the reset
-* @param	{Ojbect}	state the keys to reset
+* @param	{Object}	state the keys to reset
 * @return {Object} 	an action creator object
 */
-export const reset = (reducer, tag, state) => ({
+export const reset = <T>(reducer: string, tag: string, state: ResetKeyList): ResetAction<T> => ({
 	type: RESET,
 	reducer,
 	tag,
 	state,
 });
+
+export type Action<T> = UpdateAction<T> | ResetAction<T>; 
+
+export type Reducer<T> = (state: T | undefined, action: Action<T>) => T & { _lastAction?: string };
 
 /**
 * createReducer
@@ -38,21 +63,21 @@ export const reset = (reducer, tag, state) => ({
 * @param	{Object}	initialState	the reducer's initial state
 * @return {Function} a createReducer function which handles update & reset actions
 */
-export const createReducer = (name, initialState) => (state = initialState, action) => {
+export const createReducer = <T extends object>(name: string, initialState: T): Reducer<T> => (state: T = initialState, action: Action<T>) => {
 	if (typeof name !== 'string') {
-		return new Error('Expected reducer name to be a string');
+		throw new Error('Expected reducer name to be a string');
 	}
 	if (typeof initialState !== 'object') {
-		return new Error('Expected initialState to be an object');
+		throw new Error('Expected initialState to be an object');
 	}
 	if (typeof state !== 'object') {
-		return new Error('Expected state to be an object');
+		throw new Error('Expected state to be an object');
 	}
 	if (typeof action !== 'object') {
-		return new Error('Expected action to be an object');
+		throw new Error('Expected action to be an object');
 	}
 	if (action.type === RESET && !Array.isArray(action.state.reset)) {
-		return new Error('expected reset options to be an array');
+		throw new Error('expected reset options to be an array');
 	}
 
 	switch (action.type) {
