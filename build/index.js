@@ -85,7 +85,7 @@ var createReducer = exports.createReducer = function createReducer(name, initial
 				if (action.reducer === name) {
 					var nextState = action.state;
 					return _extends({}, state, nextState, {
-						lastAction: action.tag
+						novuxLastAction: action.tag
 					});
 				}
 				return state;
@@ -98,7 +98,7 @@ var createReducer = exports.createReducer = function createReducer(name, initial
 					}
 					var resettedState = resetState(initialState, state, _nextState);
 					return _extends({}, resettedState, {
-						lastAction: action.tag
+						novuxLastAction: action.tag
 					});
 				}
 				return state;

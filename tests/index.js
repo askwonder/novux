@@ -24,7 +24,7 @@ const test = describe('novux:', () => {
 			const expected = {
 				status: { isFetching: false },    // initial state
 				test: true,                       // new state
-				_lastAction: 'test',              // log
+				novuxLastAction: 'test',              // log
 			};
 			assert.deepEqual(nextState, expected, 'the reducer can update its state');
 			done();
@@ -54,7 +54,7 @@ const test = describe('novux:', () => {
 			const expected = {
 				status: { isFetching: false },
 				test: true,
-				_lastAction: 'reset isFetching',
+				novuxLastAction: 'reset isFetching',
 			};
 			const state = api(changeState, resetAction);
 			assert.deepEqual(state, expected, 'if a key is defined in state and initialState, it is reset to its initial value');
@@ -67,7 +67,7 @@ const test = describe('novux:', () => {
 			});
 			const expected = {
 				status: { isFetching: false },
-				_lastAction: 'resetTest',
+				novuxLastAction: 'resetTest',
 			};
 			const state = api(nextState, resetAction);
 			assert.deepEqual(state, expected, 'if a key is defined in state but undefined in the initial state, it\'s removed');
@@ -87,7 +87,7 @@ const test = describe('novux:', () => {
 			const expected = {
 				status: { isFetching: false },
 				test: true,
-				_lastAction: 'reset valid path',
+				novuxLastAction: 'reset valid path',
 			};
 			const state = api(changeState, resetAction);
 			assert.deepEqual(state, expected, 'if a path is defined in the initial state, it is reset to its initial value');
@@ -108,7 +108,7 @@ const test = describe('novux:', () => {
 			const expected = {
 				status: { isFetching: false },
 				test: true,
-				_lastAction: 'reset invalid path',
+				novuxLastAction: 'reset invalid path',
 			};
 			const state = api(changeState, resetAction);
 			assert.deepEqual(state, expected, 'the longest valid subPath is reset');
@@ -129,7 +129,7 @@ const test = describe('novux:', () => {
 			const expected = {
 				status: { isFetching: { for: { a: { long: { path: true }}}}},
 				test: true,
-				_lastAction: 'reset invalid path',
+				novuxLastAction: 'reset invalid path',
 			}
 			const state = api(changeState, resetAction);
 			assert.deepEqual(state, expected, 'the long valid subPath is reset');
@@ -153,7 +153,7 @@ const test = describe('novux:', () => {
 					another: { path: true },
 					isFetching: false
 				},
-				_lastAction: 'reset',
+				novuxLastAction: 'reset',
 			};
 			assert.deepEqual(nextState, expected);
 			done();

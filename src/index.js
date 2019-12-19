@@ -62,7 +62,7 @@ export const createReducer = (name, initialState) => (state = initialState, acti
 			return {
 				...state,
 				...nextState,
-				lastAction: action.tag,
+				novuxLastAction: action.tag,
 			};
 		}
 		return state;
@@ -73,9 +73,9 @@ export const createReducer = (name, initialState) => (state = initialState, acti
 			if (nextState.length === 0) { return initialState; }
 			const resettedState = resetState(initialState, state, nextState);
 			return {
-				...resettedState,
-				lastAction: action.tag,
-			};
+        ...resettedState,
+        novuxLastAction: action.tag,
+      };
 		}
 		return state;
 
